@@ -20,6 +20,19 @@ from sklearn.preprocessing import MinMaxScaler
 from sklearn.metrics import mean_squared_error
 
 
+# Define functions
+def feature_creation(data):
+    x, y = [], []
+
+    for i in range(WINDOW_SIZE, len(data)):
+        x.append(data[i - WINDOW_SIZE:i, 0])
+        y.append([data[i:i, 0]])
+    
+    x, y = np.array(x), np.array(y)
+    x = np.reshape(x, (x.shape[0], x.shape[1], 1))
+
+    return x, y
+
 # Constants
 TICKER = 'TSLA'
 CATEGORY = 'Adj Close'
@@ -38,18 +51,6 @@ train_size = math.ceil(len(data) * TRAIN_PERCENT)
 train, test = data[:train_size], data[train_size:]
 
 # Feature creation
-train_x, test_x, train_y, test_y = [], [], [], []
-for i in range(WINDOW_SIZE, len(train)):
-    train_x.append(data[i - WINDOW_SIZE:i, 0])
-    train_y.append([data[i:i, 0]])
-
-for i in range(WINDOW_SIZE, len(test)):
-    test_x.append(data[i - WINDOW_SIZE:i, 0])
-    test_y.append([data[i:i, 0]])
-
-train_x, train_y = np.array(train_x), np.array(train_y)
-test_x, test_y = np.array(test_x), np.array(test_y)
-
-train_x = np.reshape(train_x, (train_x.shape[0], train_x.shape[1], 1))
-test_x = np.reshape(test_x, (test_x.shape[0], test_x.shape[1], 1))
+train_x, test_x = feature_creation(train)
+train_y, test_y = feature_creation(test)
 
