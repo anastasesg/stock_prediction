@@ -21,6 +21,10 @@ from sklearn.metrics import mean_squared_error
 
 
 # Define functions
+def train_test_split(data, percent):
+    train_size = math.ceil(len(data) * percent)
+    return data[:train_size], data[train_size:]
+
 def feature_creation(data):
     x, y = [], []
 
@@ -36,7 +40,6 @@ def feature_creation(data):
 # Constants
 TICKER = 'TSLA'
 CATEGORY = 'Adj Close'
-TRAIN_PERCENT = 0.9
 WINDOW_SIZE = 60
 
 SCALER = MinMaxScaler()
@@ -47,8 +50,7 @@ data = yf.download(TICKER)
 data = data[[CATEGORY]]
 
 # Data processing
-train_size = math.ceil(len(data) * TRAIN_PERCENT)
-train, test = data[:train_size], data[train_size:]
+train, test = train_test_split(data)
 
 # Feature creation
 train_x, test_x = feature_creation(train)
