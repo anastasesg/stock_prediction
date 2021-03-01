@@ -32,8 +32,8 @@ def data_collection():
 
 def train_test_split(data, percent):
     scaled_data = SCALER(data)
-    train_size = math.ceil(len(data) * percent)
-    return data[:train_size], data[train_size:]
+    train_size = math.ceil(len(scaled_data) * percent)
+    return scaled_data[:train_size], scaled_data[train_size:]
 
 
 def feature_creation(data):
