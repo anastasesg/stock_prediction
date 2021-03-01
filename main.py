@@ -6,7 +6,8 @@ import os
 
 ## Libraries for the model creation
 import tensorflow
-import keras
+import keras'
+from keras.callbacks import ModelCheckpoint
 from keras.models import Sequential
 from keras.layers import LSTM
 from keras.layers import Dense
@@ -51,8 +52,6 @@ data = data[[CATEGORY]]
 
 # Data processing
 train, test = train_test_split(data)
-
-# Feature creation
 train_x, test_x = feature_creation(train)
 train_y, test_y = feature_creation(test)
 
