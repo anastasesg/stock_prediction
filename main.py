@@ -3,6 +3,7 @@ from tqdm import tqdm
 import numpy as np
 import math
 import os
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 
 ## Libraries for the model creation
 import tensorflow
@@ -22,9 +23,16 @@ from sklearn.metrics import mean_squared_error
 
 
 # Define functions
+def data_collection():
+    data = yf.download(TICKER)
+    data = data[[CATEGORY]]
+    return data
+
+
 def train_test_split(data, percent):
     train_size = math.ceil(len(data) * percent)
     return data[:train_size], data[train_size:]
+
 
 def feature_creation(data):
     x, y = [], []
@@ -38,6 +46,15 @@ def feature_creation(data):
 
     return x, y
 
+
+def build_model(train_x, train_y):
+    MODEL.add(LSTM(300, return_sequences=True, input_shape=(train_x.shape[1], 1)))
+    MODEL.add(LSTM(250, return_sequences=False))
+    MODEL.add(Dense(1))
+    MODEL.compile(optimizer='adam', loss='mean_squared_error')
+
+    
+
 # Constants
 TICKER = 'TSLA'
 CATEGORY = 'Adj Close'
@@ -47,8 +64,7 @@ SCALER = MinMaxScaler()
 MODEL = Sequential()
 
 # Data collection
-data = yf.download(TICKER)
-data = data[[CATEGORY]]
+data = data_collection()
 
 # Data processing
 train, test = train_test_split(data)
