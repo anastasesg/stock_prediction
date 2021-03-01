@@ -9,7 +9,7 @@ os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 
 ## Libraries for the model creation
 import tensorflow
-import keras'
+import keras
 from keras.callbacks import ModelCheckpoint
 from keras.models import Sequential
 from keras.layers import LSTM
@@ -57,9 +57,12 @@ def build_model(train_x, train_y, test_x, test_y):
     MODEL.compile(optimizer='adam', loss='mean_squared_error')
 
     filename = os.path.join(PARENT_DIRECTORY, 'model_epoch_{epoch:02d}.hdf5')
-    checkpoint = ModelCheckpoint(filepath=filename, monitor='val_loss', verbose=True, save_best_only=True, mode ='min')
+    checkpoint = ModelCheckpoint(filepath=filename, monitor='val_loss', verbose=True, save_best_only=False, mode ='min')
     MODEL.fit(train_x, train_y, epochs = 10, batch_size = 100, callbacks = [checkpoint], validation_data = (test_x, test_y))
-    
+
+
+def select_model():
+    temporary_model
 
 # Constants
 TICKER = 'TSLA'
@@ -74,9 +77,9 @@ MODEL = Sequential()
 data = data_collection()
 
 # Data processing
-train, test = train_test_split(data)
-train_x, test_x = feature_creation(train)
-train_y, test_y = feature_creation(test)
+train, test = train_test_split(data, 0.9)
+train_x, train_y = feature_creation(train)
+test_x, test_y = feature_creation(test)
 
 # Build/trian model
 build_model(train_x, train_y, test_x, test_y)
