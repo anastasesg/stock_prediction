@@ -1,4 +1,5 @@
 ## Miscelaneous libraries
+from types import BuiltinFunctionType
 from tensorflow.keras import callbacks
 from tqdm import tqdm
 import numpy as np
@@ -31,7 +32,7 @@ def data_collection():
 
 
 def train_test_split(data, percent):
-    scaled_data = SCALER(data)
+    scaled_data = SCALER.fit_transform(data)
     train_size = math.ceil(len(scaled_data) * percent)
     return scaled_data[:train_size], scaled_data[train_size:]
 
@@ -77,3 +78,5 @@ train, test = train_test_split(data)
 train_x, test_x = feature_creation(train)
 train_y, test_y = feature_creation(test)
 
+# Build/trian model
+build_model(train_x, train_y, test_x, test_y)
