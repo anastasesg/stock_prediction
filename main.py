@@ -1,4 +1,5 @@
 ## Miscelaneous libraries
+from tensorflow.keras import callbacks
 from tqdm import tqdm
 import numpy as np
 import math
@@ -30,6 +31,7 @@ def data_collection():
 
 
 def train_test_split(data, percent):
+    scaled_data = SCALER(data)
     train_size = math.ceil(len(data) * percent)
     return data[:train_size], data[train_size:]
 
@@ -47,18 +49,22 @@ def feature_creation(data):
     return x, y
 
 
-def build_model(train_x, train_y):
+def build_model(train_x, train_y, test_x, test_y):
     MODEL.add(LSTM(300, return_sequences=True, input_shape=(train_x.shape[1], 1)))
     MODEL.add(LSTM(250, return_sequences=False))
     MODEL.add(Dense(1))
     MODEL.compile(optimizer='adam', loss='mean_squared_error')
 
+    filename = os.path.join(PARENT_DIRECTORY, 'model_epoch_{epoch:02d}.hdf5')
+    checkpoint = ModelCheckpoint(filepath=filename, monitor='val_loss', verbose=True, save_best_only=True, mode ='min')
+    MODEL.fit(train_x, train_y, epochs = 10, batch_size = 100, callbacks = [checkpoint], validation_data = (test_x, test_y))
     
 
 # Constants
 TICKER = 'TSLA'
 CATEGORY = 'Adj Close'
 WINDOW_SIZE = 60
+PARENT_DIRECTORY = 'saved_models'
 
 SCALER = MinMaxScaler()
 MODEL = Sequential()
